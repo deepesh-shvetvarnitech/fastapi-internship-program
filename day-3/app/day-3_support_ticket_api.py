@@ -206,36 +206,32 @@ def ticket_statistics():
 '''
 Question 1
 
-Path Parameter ka use ticket ID ko URL se lene ke liye kiya gaya hai aur invalid ID par 404 error diya gaya hai.
+Pydantic model request body ke data ko validate karta hai aur required fields aur data rules check karta hai.
 
 Question 2
 
-Pydantic BaseModel ka use request body ko validate karne ke liye kiya gaya hai.
+PUT existing resource ko update karne ke liye use hota hai, jabki PATCH resource ke specific part ko update karne ke liye use hota hai.
 
 Question 3
 
-POST ka use new ticket create karne ke liye aur successful creation par 201 status diya gaya hai.
+201 ka matlab hai ki request ke through new resource successfully create hua hai.
 
 Question 4
 
-PUT ka use existing ticket ke subject, description aur priority ko update karne ke liye kiya gaya hai.
+204 ka matlab hai request successful hai aur DELETE ke baad return karne ke liye koi response body nahi hai.
 
 Question 5
 
-PATCH ka use ticket ka status open, in_progress ya closed karne ke liye kiya gaya hai.
+400 invalid input/business rule ke liye, 404 resource na milne ke liye, aur 422 request validation fail hone par use hota hai.
 
 Question 6
 
-Query Parameters ka use search, status aur priority ke according tickets filter karne ke liye kiya gaya hai.
+Search me result na milna error nahi hai, isliye API [] return karti hai, jiska matlab hai koi matching ticket nahi mila.
 
 Question 7
 
-DELETE ka use ticket remove karne ke liye kiya gaya hai aur successful deletion par 204 status diya gaya hai.
+Agar priority="urgent" bheja jaye, to API usse invalid priority maan kar 400 error return karegi.
 
 Question 8
 
-Statistics me tickets ka total aur open tickets count kiya gaya hai.
-
-Question 9
-
-FastAPI ka /docs page API endpoints ko test aur document karne ke liye use hota hai.'''
+10 million tickets ke liye in-memory list ki jagah database use karenge aur indexing, pagination aur efficient search/filtering add karenge.'''
