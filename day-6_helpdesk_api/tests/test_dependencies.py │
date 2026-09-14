@@ -1,0 +1,86 @@
+from fastapi.testclient import TestClient
+
+from app.dependencies import api_key_verification
+from app.main import app
+
+
+client = TestClient(app)
+
+
+def test_pagination():
+    response = client.get(
+        "/api/v1/tickets?page=1&page_size=2"
+    )
+
+    assert response.status_code == 200
+
+    data = response.json()
+
+    assert data["page"] == 1
+    assert data["page_size"] == 2
+    assert len(data["tickets"]) == 2
+
+
+def test_filters():
+    response = client.get(
+        "/api/v1/tickets?status=open"
+    )
+
+    assert response.status_code == 200
+
+    data = response.json()
+
+    assert data["total"] == 2
+
+
+def test_metadata():
+    response = client.get(
+        "/api/v1/tickets/metadata",
+        headers={
+            "X-Request-ID": "12345",
+            "User-Agent": "TestClient",
+        },
+    )
+
+    assert response.status_code == 200
+
+    data = response.json()
+
+    assert data["metadata"]["method"] == "GET"
+    assert data["metadata"]["request_id"] == "12345"
+
+
+def test_secure_data_without_key():
+    response = client.get(
+        "/api/v1/tickets/secure-data"
+    )
+
+    assert response.status_code == 403
+
+
+def test_secure_data_with_valid_key():
+    response = client.get(
+        "/api/v1/tickets/secure-data",
+        headers={
+            "X-API-Key": "development-secret-key"
+        },
+    )
+
+    assert response.status_code == 200
+
+
+def test_dependency_override():
+    def override_api_key():
+        return "test-key"
+
+    app.dependency_overrides[
+        api_key_verification
+    ] = override_api_key
+
+    response = client.get(
+        "/api/v1/tickets/secure-data"
+    )
+
+    assert response.status_code == 200
+
+    app.dependency_overrides.clear()
